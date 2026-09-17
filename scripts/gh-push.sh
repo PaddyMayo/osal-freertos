@@ -4,7 +4,8 @@
 # Run from a feature branch with commits ready: pushes it and opens the PR.
 # Run from main with commits ready: creates a branch (named after HEAD's
 # commit message) to hold them, pushes it, opens the PR, and deletes the
-# local branch afterward (the remote copy lives on for the PR).
+# local branch and its local remote-tracking ref afterward (the remote
+# copy lives on for the PR).
 #
 # Does not stage or commit anything - commit your changes first.
 set -euo pipefail
@@ -33,4 +34,5 @@ gh pr create --fill --base main
 if [ "$created_branch" = true ]; then
   git checkout main
   git branch -D "$branch"
+  git branch -Dr "origin/$branch"
 fi
