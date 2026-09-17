@@ -10,6 +10,11 @@
 # Does not stage or commit anything - commit your changes first.
 set -euo pipefail
 
+if ! gh auth status >/dev/null 2>&1; then
+  echo "gh is not authenticated - run 'gh auth login' first." >&2
+  exit 1
+fi
+
 current=$(git rev-parse --abbrev-ref HEAD)
 created_branch=false
 
