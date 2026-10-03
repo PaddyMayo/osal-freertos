@@ -38,16 +38,23 @@ set(FREERTOS_COVERAGE_INCLUDES
     ${OSAL_REAL_SOURCE_DIR}/src/os/shared/inc
     ${CMAKE_BINARY_DIR}/osal_build/inc
     ${UT_ASSERT_REAL_SOURCE_DIR}/inc
+    ${CMAKE_SOURCE_DIR}/generic-freertos/inc
+    ${CMAKE_SOURCE_DIR}/third_party/littlefs
 )
 
 # Sources every module's test executable needs regardless of which OSAL
 # subsystem it targets: the plain (non-scheduler) main(), the OS_task_table/
 # OS_TaskEntryPoint-style shared-layer stand-ins, the minimal UT_BSP_*
 # implementation, and ut_assert's own OS-agnostic sources.
+# littlefs and the RAM volume are linked into every executable: only the
+# file and filesys tests use them, and that keeps the list the same for all.
 set(FREERTOS_COVERAGE_COMMON_SOURCES
     src/main.c
     stubs/osal-shared-stubs.c
     stubs/ut-bsp-stubs.c
+    stubs/ut-storage-stubs.c
+    ${CMAKE_SOURCE_DIR}/third_party/littlefs/lfs.c
+    ${CMAKE_SOURCE_DIR}/third_party/littlefs/lfs_util.c
     ${UT_ASSERT_REAL_SOURCE_DIR}/src/utassert.c
     ${UT_ASSERT_REAL_SOURCE_DIR}/src/utlist.c
     ${UT_ASSERT_REAL_SOURCE_DIR}/src/uttools.c
@@ -93,12 +100,13 @@ foreach(IMPL_SRC ${FREERTOS_IMPL_SOURCES})
         list(APPEND MODULE_SOURCES ${MODULE_ADAPTOR})
     endif ()
 
+
     add_executable(${TESTRUNNER_TARGET}
         ${MODULE_SOURCES}
         $<TARGET_OBJECTS:${UTOBJ_TARGET}>
     )
     target_include_directories(${TESTRUNNER_TARGET} PRIVATE ${FREERTOS_COVERAGE_INCLUDES})
-    target_compile_definitions(${TESTRUNNER_TARGET} PRIVATE "_UNIT_TEST_")
+    target_compile_definitions(${TESTRUNNER_TARGET} PRIVATE "_UNIT_TEST_" LFS_NO_MALLOC)
     target_compile_options(${TESTRUNNER_TARGET} PRIVATE --coverage)
     target_link_options(${TESTRUNNER_TARGET} PRIVATE --coverage)
 

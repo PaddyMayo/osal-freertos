@@ -3,7 +3,7 @@
  *
  * Purpose:
  *   Host-independent FreeRTOS OSAL BSP entry point and support code, shared
- *   across every FreeRTOS host-specific BSP directory (e.g. generic-freertos-posix).
+ *   across every FreeRTOS host-specific BSP (e.g. the POSIX simulator port).
  *   Each consumer compiles this file itself against its own
  *   FreeRTOSConfigPlatform.h (see FreeRTOSPlatformContract.h), since some of
  *   the code below sizes static buffers from config values that legitimately

@@ -11,6 +11,7 @@
 #include "os-shared-common.h"
 #include "os-shared-task.h"
 #include "os-shared-queue.h"
+#include "os-shared-filesys.h"
 
 /* Normally defined in osapi-common.c */
 OS_SharedGlobalVars_t OS_SharedGlobalVars;
@@ -23,6 +24,9 @@ OS_task_internal_record_t OS_task_table[OS_MAX_TASKS];
 
 /* Likewise, normally defined in osapi-queue.c */
 OS_queue_internal_record_t OS_queue_table[OS_MAX_QUEUES];
+
+/* Likewise, normally defined in osapi-filesys.c */
+OS_filesys_internal_record_t OS_filesys_table[OS_MAX_FILE_SYSTEMS];
 
 /*
  * Normally reached from a running FreeRTOS scheduler calling into
