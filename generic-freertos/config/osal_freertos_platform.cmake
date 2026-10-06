@@ -2,10 +2,9 @@
 #
 # osal_freertos_platform(): the one declaration a FreeRTOS BSP makes, for the
 # PORT named in the vendor's -C config file. It creates freertos_config, which
-# carries every value FreeRTOSConfig.h needs as a compile definition, and the
-# osal_<bsp>_impl target OSAL builds the BSP from.
+# carries every value FreeRTOSConfig.h needs as a compile definition.
 #
-# Arguments, set per port in generic-freertos/CMakeLists.txt:
+# Arguments, set per port in generic-freertos/config/CMakeLists.txt:
 #
 #   CORE_CLOCK                  the port takes OSAL_FREERTOS_CPU_CLOCK_HZ
 #   INTERRUPT_PRIORITIES        the port takes the two interrupt priority keys
@@ -32,7 +31,6 @@
 ##########################################################################
 
 set(OSAL_FREERTOS_PLATFORM_DIR ${CMAKE_CURRENT_LIST_DIR})
-get_filename_component(OSAL_FREERTOS_GENERIC_DIR ${OSAL_FREERTOS_PLATFORM_DIR} DIRECTORY)
 
 function(osal_freertos_platform)
     cmake_parse_arguments(PLATFORM
@@ -105,13 +103,4 @@ function(osal_freertos_platform)
     target_include_directories(freertos_config SYSTEM INTERFACE ${OSAL_FREERTOS_PLATFORM_DIR})
     target_compile_definitions(freertos_config INTERFACE ${definitions})
     target_link_options(freertos_config INTERFACE -T${linker_script})
-
-    # ---- osal_<bsp>_impl: what OSAL builds the BSP from --------------------
-    set(impl osal_${OSAL_SYSTEM_BSPTYPE}_impl)
-    add_library(${impl} OBJECT
-        ${OSAL_FREERTOS_GENERIC_DIR}/src/bsp_start.c
-        ${OSAL_FREERTOS_GENERIC_DIR}/src/bsp_console.c
-        ${OSAL_FREERTOS_SOURCES}
-    )
-    target_link_libraries(${impl} PUBLIC freertos_kernel)
 endfunction()
